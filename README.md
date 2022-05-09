@@ -98,14 +98,10 @@ Hi,I'm a Fullstack Developer, Technical Content Writer and Problem Setter. Apart
 
 ![My GitHub stats](https://github-readme-stats.vercel.app/api?username=ixicale&show_icons=true&count_private=true&include_all_commits=true&hide_border=true)
 
-## Wakatime stats
+## Weekly development breakdown
 
-<!--INFO: to run this section you need to set your secret key 'WAKATIME_API_KEY'-->
+<!--INFO: to run check here for more details https://github.com/athul/waka-readme -->
 > NOTE: Wakatime does not indicate my skill level or anything like that, it's a GitHub metric of which languages have the most code on GitHub. It's a new feature of github-readme-stats linked with Wakatime.
 
 <!--START_SECTION:waka-->
-
-```text
-```
-
 <!--END_SECTION:waka-->
