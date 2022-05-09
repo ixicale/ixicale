@@ -100,8 +100,8 @@ Hi,I'm a Fullstack Developer, Technical Content Writer and Problem Setter. Apart
 
 ## Wakatime stats
 
+<!--INFO: to run this section you need to set your secret key 'WAKATIME_API_KEY'-->
 > NOTE: Wakatime does not indicate my skill level or anything like that, it's a GitHub metric of which languages have the most code on GitHub. It's a new feature of github-readme-stats linked with Wakatime.
-
 
 <!--START_SECTION:waka-->
 
