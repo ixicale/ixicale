@@ -114,7 +114,7 @@ Other        1 hr 21 mins    ⣿⣤⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀
   <h2 align="center">❤️ Do you want to be my sponsor? ❤️</h2>
   <br>
   <p align="center">
-    <a href="https://ko-fi.com/S6S77S0Z3?ref=onboarding_email_share2">
+    <a href="https://ko-fi.com/xiide">
       <img src="https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-Fi!" height="35" />&#8287;&#8287;
     </a>
   </p>
