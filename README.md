@@ -3,7 +3,7 @@
 <img align="center" src="assets/gif/coding.gif" alt="Coding" height="200px" />
 </p>
 <p align="center">
-<a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?size=25&color=F75C7E&center=true&vCenter=true&width=540&lines=Hey!+Xide's+here%F0%9F%91%8B;5%2B+years+of+coding+expirience;Always+learning+new+things"></a>
+<a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?size=25&color=F75C7E&center=true&vCenter=true&width=540&lines=Hey!+Xide's+here%F0%9F%91%8B;5%2B+years+of+coding+experience;Always+learning+new+things"></a>
 </p>
 
 <h2 align="center">Contact Me</h2>
