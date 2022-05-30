@@ -98,6 +98,7 @@ Other      30 mins         ⣿⣦⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀�
   <summary> 📘 My open source projects</summary>
   <p align="left">
     <a href="https://github.com/ixicale/Bitburner-scripts"><img width="282" src="https://denvercoder1-github-readme-stats.vercel.app/api/pin/?username=ixicale&repo=Bitburner-scripts&theme=react&bg_color=1F222E&title_color=F85D7F&icon_color=F8D866&hide_border=true&show_icons=false" alt="Bitburner-scripts" /></a>
+    <a href="https://github.com/ixicale/tools"><img width="282" src="https://denvercoder1-github-readme-stats.vercel.app/api/pin/?username=ixicale&repo=tools&theme=react&bg_color=1F222E&title_color=F85D7F&icon_color=F8D866&hide_border=true&show_icons=false" alt="tools" /></a>
   </p>
 
   <p align="left">
