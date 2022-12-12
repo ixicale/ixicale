@@ -20,8 +20,8 @@
 <h2 align="center">💻 About me 😁</h2>
 <br>
 
--   🔭 I’m currently Developer at Cargamos.
--   🌱 I’m currently learning Flutter.
+-   🔭 I’m currently Developer at Stori.
+-   🌱 I’m currently Go.
 -   👯 Part of Developer Community.
 -   📫 I'm from Mexico.
 -   🤓 Pronouns: [He/Him](https://www.mypronouns.org/he-him)
