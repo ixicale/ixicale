@@ -21,7 +21,7 @@
 <br>
 
 -   🔭 I’m currently Developer at Stori.
--   🌱 I’m currently Go.
+-   🌱 I’m currently learning Vue .
 -   👯 Part of Developer Community.
 -   📫 I'm from Mexico.
 -   🤓 Pronouns: [He/Him](https://www.mypronouns.org/he-him)
