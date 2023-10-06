@@ -45,14 +45,6 @@ jobs:
         AUTHOR_EMAIL: ${{ env.BOT_ACTION_MAIL }}
         TARGET_BRANCH: ${{ env.BRANCH_NAME }}
 
-    - name: Commit and push branch
-      run: |
-        git config --global user.name ${{ env.BOT_ACTION_NAME }}
-        git config --global user.email ${{ env.BOT_ACTION_MAIL }}
-        git add .
-        git commit -m "Update WakaTime stats" || echo "No changes to commit"
-        git push -f origin ${{ env.BRANCH_NAME }}
-
     - name: Create Pull Request if not exists
       uses: peter-evans/create-pull-request@v3
       with:
