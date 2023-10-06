@@ -1,4 +1,7 @@
 <!-- Typing SVG by DenverCoder1 - https://github.com/DenverCoder1/readme-typing-svg -->
+[![WakaTime](https://github.com/ixicale/ixicale/actions/workflows/wakatime.yaml/badge.svg?branch=main)](https://github.com/ixicale/ixicale/actions/workflows/wakatime.yaml)
+
+
 <p align="center">
 <img align="center" src="assets/gif/coding.gif" alt="Coding" height="200px" />
 </p>
