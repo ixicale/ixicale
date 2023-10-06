@@ -12,31 +12,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Checkout the repository to the runner
     - name: Checkout code
       uses: actions/checkout@v2
     
+    # Set up environment variables for use in later steps
     - name: Setup ENV values
       run: |
         echo "BRANCH_NAME=workflow/wakatime_stats" >> $GITHUB_ENV
-        echo "BOT_ACTION_NAME='GitHub Actions Bot'" >> $GITHUB_ENV
-        echo "BOT_ACTION_MAIL='actions@github.com'" >> $GITHUB_ENV
+        echo "BOT_ACTION_NAME=GitHub Actions Bot" >> $GITHUB_ENV
+        echo "BOT_ACTION_MAIL=actions@github.com" >> $GITHUB_ENV
 
+    # Authenticate the GitHub CLI tool for creating PRs later
     - name: Set up GitHub CLI
-      # secrets.GITHUB_TOKEN is generated automatically
       run: |
         gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}" 
 
-    - name: Reset branch '${{ env.BRANCH_NAME }}'
-      # Create the branch but if exists, this should checkout there and then, reset with origin/main
-      # This job is up to you!
+    # Check if the branch exists. If it does, reset it to match main. If not, create it.
+    - name: Reset or Create branch '${{ env.BRANCH_NAME }}'
       run: |
         git config --global user.name ${{ env.BOT_ACTION_NAME }}
         git config --global user.email ${{ env.BOT_ACTION_MAIL }}
         git fetch origin
-        git checkout -B ${{ env.BRANCH_NAME }}
-        git reset --hard origin/main
-        git push -f origin ${{ env.BRANCH_NAME }}
+        if git show-ref --quiet refs/remotes/origin/${{ env.BRANCH_NAME }}; then
+          git checkout ${{ env.BRANCH_NAME }}
+          git merge origin/main --no-ff -m "Merge changes from main"
+        else
+          git checkout -b ${{ env.BRANCH_NAME }}
+        fi
 
+    # Update the repository's README with WakaTime statistics
     - name: Update README using WakaTime
       id: wakatime
       uses: athul/waka-readme@master
@@ -47,11 +52,26 @@ jobs:
         AUTHOR_EMAIL: ${{ env.BOT_ACTION_MAIL }}
         TARGET_BRANCH: ${{ env.BRANCH_NAME }}
 
-    - name: Create Pull Request
+    # Check if there are any new changes to push
+    - name: Check for changes
       run: |
         git fetch origin
-        git pull origin ${{ env.BRANCH_NAME }}
+        CHANGES=$(git diff origin/main..${{ env.BRANCH_NAME }} --shortstat)
+        if [[ -z "$CHANGES" ]]; then
+          echo "No changes to push."
+          exit 0
+        fi
+
+    # Push any new changes to the branch
+    - name: Push changes to branch
+      run: |
+        git push origin ${{ env.BRANCH_NAME }}
+
+    # Create a pull request with the repository owner as a reviewer
+    - name: Create Pull Request
+      run: |
         gh pr create \
           --base main --head ${{ env.BRANCH_NAME }} \
           --title "workflow/wakatime_stats (README updates)" \
-          --body "README updated from workflow using wakatime. Hurry up @${{ github.repository_owner }}! come and take a look 🚀"
+          --body "README updated from workflow using wakatime. Hurry up @${{ github.repository_owner }}! come and take a look 🚀" \
+          --reviewer ${{ github.repository_owner }}
