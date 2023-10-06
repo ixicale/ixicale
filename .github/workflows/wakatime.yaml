@@ -36,6 +36,7 @@ jobs:
         git fetch origin
         git checkout -B ${{ env.BRANCH_NAME }}
         git reset --hard origin/main
+        git push -f origin ${{ env.BRANCH_NAME }}
 
     - name: Update README using WakaTime
       id: wakatime
