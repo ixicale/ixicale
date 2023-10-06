@@ -54,4 +54,4 @@ jobs:
         gh pr create \
           --base main --head ${{ env.BRANCH_NAME }} \
           --title "workflow/wakatime_stats (README updates)" \
-          --body "README updated from workflow using wakatime"
+          --body "README updated from workflow using wakatime. Hurry up ${{ github.repository_owner }}! come and take a look 🚀"
