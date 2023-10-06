@@ -26,6 +26,10 @@ jobs:
         echo "BOT_ACTION_NAME='GitHub Actions Bot'" >> $GITHUB_ENV
         echo "BOT_ACTION_MAIL='actions@github.com'" >> $GITHUB_ENV
 
+    - name: Set up GitHub CLI
+      run: |
+        gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+
     - name: Sync branch '${{ env.BRANCH_NAME }}'
       run: |
         git config --global user.name ${{ env.BOT_ACTION_NAME }}
@@ -45,11 +49,8 @@ jobs:
         AUTHOR_EMAIL: ${{ env.BOT_ACTION_MAIL }}
         TARGET_BRANCH: ${{ env.BRANCH_NAME }}
 
-    - name: Create Pull Request if not exists
-      uses: peter-evans/create-pull-request@v3
-      with:
-        title: "Update WakaTime stats"
-        body: "This PR updates the WakaTime stats."
-        branch: ${{ env.BRANCH_NAME }}
-        base: main
-        modify: true
+    - name: Create Pull Request
+      run: |
+        git fetch origin
+        git pull origin ${{ env.BRANCH_NAME }}
+        gh pr create --base origin/main --head ${{ env.BRANCH_NAME }} --title "Wakatime Readme update" --body "Automated update of README.md"
