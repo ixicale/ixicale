@@ -44,6 +44,7 @@ jobs:
           git merge origin/main --no-ff --allow-unrelated-histories -m "Merge changes from main"
         else
           git checkout -b ${{ env.BRANCH_NAME }}
+          git push -u origin ${{ env.BRANCH_NAME }}
         fi
 
     # Update the repository's README with WakaTime statistics
