@@ -53,4 +53,12 @@ jobs:
       run: |
         git fetch origin
         git pull origin ${{ env.BRANCH_NAME }}
-        gh pr create --base origin/main --head ${{ env.BRANCH_NAME }} --title "Wakatime Readme update" --body "Automated update of README.md"
+
+    - name: Create Pull Request if not exists
+      uses: peter-evans/create-pull-request@v3
+      with:
+        title: "Update WakaTime stats"
+        body: "This PR updates the WakaTime stats."
+        branch: ${{ env.BRANCH_NAME }}
+        base: main
+        modify: true
