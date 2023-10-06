@@ -11,8 +11,25 @@ jobs:
     name: Update this repo's README
     runs-on: ubuntu-latest
     steps:
-      - uses: athul/waka-readme@master
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up GitHub CLI
+        run: |
+          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Update README using WakaTime
+        id: wakatime
+        uses: athul/waka-readme@master
         with:
           WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
           BLOCKS: ⣀⣄⣤⣦⣶⣷⣿
-          COMMIT_MESSAGE: Wakatime Readme workflow
+
+      - name: Create Pull Request
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b wakatime-readme-update-$(date +'%Y%m%d%H%M%S')
+          git add README.md
+          git commit -m "Wakatime Readme workflow"
+          gh pr create --base master --head wakatime-readme-update-$(date +'%Y%m%d%H%M%S') --title "Wakatime Readme update" --body "Automated update of README.md"
