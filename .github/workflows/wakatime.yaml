@@ -1,16 +1,11 @@
 name: Scheduled WakaTime Update
 
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   # Allow to automate by schedule
   schedule:
-    - cron: '*/5 * * * *'  # Run every 5 minutes
+    - cron: '0 0 * * *'  # Runs at 00:00
 
 jobs:
   update-wakatime:
@@ -27,10 +22,13 @@ jobs:
         echo "BOT_ACTION_MAIL='actions@github.com'" >> $GITHUB_ENV
 
     - name: Set up GitHub CLI
+      # secrets.GITHUB_TOKEN is generated automatically
       run: |
-        gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+        gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}" 
 
-    - name: Sync branch '${{ env.BRANCH_NAME }}'
+    - name: Reset branch '${{ env.BRANCH_NAME }}'
+      # Create the branch but if exists, this should checkout there and then, reset with origin/main
+      # This job is up to you!
       run: |
         git config --global user.name ${{ env.BOT_ACTION_NAME }}
         git config --global user.email ${{ env.BOT_ACTION_MAIL }}
@@ -53,15 +51,7 @@ jobs:
       run: |
         git fetch origin
         git pull origin ${{ env.BRANCH_NAME }}
-        gh pr create --base main --head ${{ env.BRANCH_NAME }}\
-          --title "Wakatime stats" --body "README updated from workflow"
-
-
-    # - name: Create Pull Request if not exists
-    #   uses: peter-evans/create-pull-request@v3
-    #   with:
-    #     title: "Update WakaTime stats"
-    #     body: "This PR updates the WakaTime stats."
-    #     branch: ${{ env.BRANCH_NAME }}
-    #     base: main
-    #     modify: true
+        gh pr create \
+          --base main --head ${{ env.BRANCH_NAME }} \
+          --title "workflow/wakatime_stats (README updates)" \
+          --body "README updated from workflow using wakatime"
