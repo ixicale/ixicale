@@ -19,20 +19,17 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Set global config
-      run: |
-        git config --global bot.name 'GitHub Actions Bot'
-        git config --global bot.email 'actions@github.com'
     
-    - name: Set branch name based
+    - name: Setup ENV values
       run: |
         echo "BRANCH_NAME=workflow/wakatime_stats" >> $GITHUB_ENV
-        echo "BOT_ACTION_NAME=$(git config --global bot.name)" >> $GITHUB_ENV
-        echo "BOT_ACTION_MAIL=$(git config --global bot.email)" >> $GITHUB_ENV
+        echo "BOT_ACTION_NAME='GitHub Actions Bot'" >> $GITHUB_ENV
+        echo "BOT_ACTION_MAIL='actions@github.com'" >> $GITHUB_ENV
 
-    - name: Setup branch '${{ env.BRANCH_NAME }}'
+    - name: Sync branch '${{ env.BRANCH_NAME }}'
       run: |
+        git config --global bot.name ${{ env.BOT_ACTION_NAME }}
+        git config --global bot.email ${{ env.BOT_ACTION_MAIL }}
         git fetch origin
         git checkout -B ${{ env.BRANCH_NAME }}
         git reset --hard origin/main
@@ -50,6 +47,8 @@ jobs:
 
     - name: Commit and push branch
       run: |
+        git config --global bot.name ${{ env.BOT_ACTION_NAME }}
+        git config --global bot.email ${{ env.BOT_ACTION_MAIL }}
         git add .
         git commit -m "Update WakaTime stats" || echo "No changes to commit"
         git push -f origin ${{ env.BRANCH_NAME }}
