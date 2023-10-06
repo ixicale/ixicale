@@ -19,33 +19,36 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Set global config
+      run: |
+        git config --global bot.name 'GitHub Actions Bot'
+        git config --global bot.email 'actions@github.com'
     
     - name: Set branch name based
-      run: echo "BRANCH_NAME=workflow/wakatime_stats" >> $GITHUB_ENV
+      run: |
+        echo "BRANCH_NAME=workflow/wakatime_stats" >> $GITHUB_ENV
+        echo "BOT_ACTION_NAME=$(git config --global bot.name)" >> $GITHUB_ENV
+        echo "BOT_ACTION_MAIL=$(git config --global bot.email)" >> $GITHUB_ENV
 
     - name: Setup branch '${{ env.BRANCH_NAME }}'
       run: |
         git fetch origin
-        git checkout -B $BRANCH_NAME
-        git reset --hard origin/main
-
-    - name: Clone repo in a separate directory and update WakaTime stats
-      run: |
-        git clone ${{ github.repository }} temp_clone
-        cd temp_clone
         git checkout -B ${{ env.BRANCH_NAME }}
         git reset --hard origin/main
-        uses: athul/waka-readme@master
-          with:
-            WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
-        cp README.md ../
-        cd ..
-        rm -rf temp_clone
+
+    - name: Update README using WakaTime
+      id: wakatime
+      uses: athul/waka-readme@master
+      with:
+        WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+        BLOCKS: ⣀⣄⣤⣦⣶⣷⣿
+        AUTHOR_NAME: ${{ env.BOT_ACTION_NAME }}
+        AUTHOR_EMAIL: ${{ env.BOT_ACTION_MAIL }}
+        TARGET_BRANCH: ${{ env.BRANCH_NAME }}
 
     - name: Commit and push branch
       run: |
-        git config --global user.name 'GitHub Actions Bot'
-        git config --global user.email 'actions@github.com'
         git add .
         git commit -m "Update WakaTime stats" || echo "No changes to commit"
         git push -f origin ${{ env.BRANCH_NAME }}
