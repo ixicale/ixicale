@@ -41,7 +41,7 @@ jobs:
         git fetch origin
         if git show-ref --quiet refs/remotes/origin/${{ env.BRANCH_NAME }}; then
           git checkout ${{ env.BRANCH_NAME }}
-          git merge origin/main --no-ff -m "Merge changes from main"
+          git merge origin/main --no-ff --allow-unrelated-histories -m "Merge changes from main"
         else
           git checkout -b ${{ env.BRANCH_NAME }}
         fi
