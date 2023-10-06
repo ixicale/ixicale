@@ -25,8 +25,8 @@ jobs:
     - name: Setup ENV values
       run: |
         echo "BRANCH_NAME=workflow/wakatime_stats" >> $GITHUB_ENV
-        echo "BOT_ACTION_NAME=GitHub Actions Bot" >> $GITHUB_ENV
-        echo "BOT_ACTION_MAIL=actions@github.com" >> $GITHUB_ENV
+        echo "BOT_ACTION_NAME='GitHub Actions Bot'" >> $GITHUB_ENV
+        echo "BOT_ACTION_MAIL='actions@github.com'" >> $GITHUB_ENV
 
     # Authenticate the GitHub CLI tool for creating PRs later
     - name: Set up GitHub CLI
