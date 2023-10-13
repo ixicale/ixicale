@@ -40,12 +40,17 @@ jobs:
         git config --global user.email ${{ env.BOT_ACTION_MAIL }}
         git fetch origin
         if git show-ref --quiet refs/remotes/origin/${{ env.BRANCH_NAME }}; then
+          echo ">>> Branch ${{ env.BRANCH_NAME }} exists. Resetting to match main."
           git checkout ${{ env.BRANCH_NAME }}
+          git pull
           git merge origin/main --no-ff --allow-unrelated-histories -m "Merge changes from main"
+          git push
         else
+          echo ">>> Branch ${{ env.BRANCH_NAME }} does not exist. Creating..."
           git checkout -b ${{ env.BRANCH_NAME }}
           git push -u origin ${{ env.BRANCH_NAME }}
         fi
+        echo ">>> Branch ${{ env.BRANCH_NAME }} is ready to go!"
 
     # Update the repository's README with WakaTime statistics
     - name: Update README using WakaTime
@@ -56,7 +61,7 @@ jobs:
         BLOCKS: ⣀⣄⣤⣦⣶⣷⣿
         AUTHOR_NAME: ${{ env.BOT_ACTION_NAME }}
         AUTHOR_EMAIL: ${{ env.BOT_ACTION_MAIL }}
-        TARGET_BRANCH: ${{ env.BRANCH_NAME }}
+        TARGET_BRANCH: origin/${{ env.BRANCH_NAME }}
 
     # Check if there are any new changes to push
     - name: Check for changes
