@@ -39,17 +39,21 @@ jobs:
         git fetch origin
         EXISTS=$(git ls-remote --heads origin ${{ env.BRANCH_NAME }})
         if [ -n "$EXISTS" ]; then
+          echo "Branch ${{ env.BRANCH_NAME }} already exists. Checking for updates."
           git checkout ${{ env.BRANCH_NAME }}
           BEHIND=$(git log HEAD..origin/${{ env.BRANCH_NAME }} --oneline)
           if [ -n "$BEHIND" ]; then
+            echo "Branch ${{ env.BRANCH_NAME }} is behind. Updating."
             git merge origin/main || { 
               echo "Merge conflict. Resetting to master";
               git reset --hard origin/main;
               git push --force;
               exit 1;
             }
+            git push
           fi
         else
+          echo "Branch ${{ env.BRANCH_NAME }} does not exist. Creating."
           git checkout -b ${{ env.BRANCH_NAME }}
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
         fi
