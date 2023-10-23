@@ -40,7 +40,7 @@ jobs:
         EXISTS=$(git ls-remote --heads origin ${{ env.BRANCH_NAME }})
         if [ -n "$EXISTS" ]; then
           git checkout ${{ env.BRANCH_NAME }}
-          BEHIND=$(git log origin/main..HEAD --oneline)
+          BEHIND=$(git log HEAD..origin/${{ env.BRANCH_NAME }} --oneline)
           if [ -n "$BEHIND" ]; then
             git merge origin/main || { 
               echo "Merge conflict. Resetting to master";
