@@ -41,8 +41,7 @@ jobs:
         if [ -n "$EXISTS" ]; then
           echo "Branch ${{ env.BRANCH_NAME }} already exists. Checking for updates."
           git checkout ${{ env.BRANCH_NAME }}
-          git pull
-          BEHIND=$(git log origin/${{ env.BRANCH_NAME }}..HEAD --oneline)
+          BEHIND=$(git log origin/main..origin/${{ env.BRANCH_NAME }} --oneline)
           echo "------------- Behind --------------"
           echo $BEHIND
           if [ -n "$BEHIND" ]; then
