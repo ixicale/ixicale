@@ -23,6 +23,13 @@ jobs:
         echo "BOT_ACTION_NAME='GitHub Actions Bot'" >> $GITHUB_ENV
         echo "BOT_ACTION_MAIL='actions@github.com'" >> $GITHUB_ENV
 
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.BRANCH_NAME }}
+        fetch-depth: 0 # Necessary for operations that need full history
+        token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Authenticate the GitHub CLI tool
       run: |
         gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}" 
@@ -57,13 +64,6 @@ jobs:
           git checkout -b ${{ env.BRANCH_NAME }}
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
         fi
-
-    - name: Checkout code
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ env.BRANCH_NAME }}
-        fetch-depth: 0 # Necessary for operations that need full history
-        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Update README using WakaTime
       id: wakatime
