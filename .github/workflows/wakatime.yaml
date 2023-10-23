@@ -47,14 +47,9 @@ jobs:
           echo "------------- Behind --------------"
           echo $BEHIND
           if [ -n "$BEHIND" ]; then
-            echo "Branch ${{ env.BRANCH_NAME }} is behind. Updating."
-            git merge origin/main || { 
-              echo "Merge conflict. Resetting to master";
-              git reset --hard origin/main;
-              git push --force;
-              exit 1;
-            }
-            git push
+            echo "Branch ${{ env.BRANCH_NAME }} is behind. Updating to main."
+            git reset --hard origin/main;
+            git push --force;
             echo "Branch ${{ env.BRANCH_NAME }} updated."
           else
             echo "Branch ${{ env.BRANCH_NAME }} is up to date."
