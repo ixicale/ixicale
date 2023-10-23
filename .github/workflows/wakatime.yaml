@@ -28,6 +28,16 @@ jobs:
         echo "BOT_ACTION_NAME='GitHub Actions Bot'" >> $GITHUB_ENV
         echo "BOT_ACTION_MAIL='actions@github.com'" >> $GITHUB_ENV
 
+    - name: Update README using WakaTime
+      id: wakatime
+      uses: athul/waka-readme@master
+      with:
+        WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+        BLOCKS: ⣀⣄⣤⣦⣶⣷⣿
+        AUTHOR_NAME: ${{ env.BOT_ACTION_NAME }}
+        AUTHOR_EMAIL: ${{ env.BOT_ACTION_MAIL }}
+        TARGET_BRANCH: ${{ env.BRANCH_NAME }}
+
     - name: Authenticate the GitHub CLI tool
       run: |
         gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}" 
@@ -53,6 +63,7 @@ jobs:
               exit 1;
             }
             git push
+            echo "Branch ${{ env.BRANCH_NAME }} updated."
           else
             echo "Branch ${{ env.BRANCH_NAME }} is up to date."
           fi
@@ -61,16 +72,6 @@ jobs:
           git checkout -b ${{ env.BRANCH_NAME }}
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
         fi
-
-    - name: Update README using WakaTime
-      id: wakatime
-      uses: athul/waka-readme@master
-      with:
-        WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
-        BLOCKS: ⣀⣄⣤⣦⣶⣷⣿
-        AUTHOR_NAME: ${{ env.BOT_ACTION_NAME }}
-        AUTHOR_EMAIL: ${{ env.BOT_ACTION_MAIL }}
-        TARGET_BRANCH: ${{ env.BRANCH_NAME }}
 
 
     - name: Commit and push if there are changes
