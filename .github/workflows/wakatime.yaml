@@ -41,7 +41,7 @@ jobs:
         if [ -n "$EXISTS" ]; then
           echo "Branch ${{ env.BRANCH_NAME }} already exists. Checking for updates."
           git checkout ${{ env.BRANCH_NAME }}
-          BEHIND=$(git log HEAD..origin/${{ env.BRANCH_NAME }} --oneline)
+          BEHIND=$(git log origin/${{ env.BRANCH_NAME }}..HEAD --oneline)
           if [ -n "$BEHIND" ]; then
             echo "Branch ${{ env.BRANCH_NAME }} is behind. Updating."
             git merge origin/main || { 
