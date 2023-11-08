@@ -77,8 +77,11 @@ jobs:
 
     - name: Create Pull Request
       run: |
+        git checkout ${{ env.BRANCH_NAME }}
+        HAS_CHANGES=$(git diff --name-only origin/main --)
         PR_EXISTS=$(gh pr list --base main --head ${{ env.BRANCH_NAME }} --state open | wc -l)
-        if [ "$PR_EXISTS" -eq "0" ]; then
+        echo "Validation if there are changes and PR does not exist"
+        if [ -n "$HAS_CHANGES" && "$PR_EXISTS" -eq "0" ]; then
           gh pr create \
             --base main \
             --head ${{ env.BRANCH_NAME }} \
@@ -87,7 +90,4 @@ jobs:
             --reviewer ${{ github.repository_owner }}
             --assignee ${{ github.repository_owner }} \
             --label workflow
-        else
-          echo "Pull request already exists."
-          exit 0
         fi
