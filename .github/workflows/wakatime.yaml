@@ -90,4 +90,9 @@ jobs:
             --reviewer ${{ github.repository_owner }}
             --assignee ${{ github.repository_owner }} \
             --label workflow
+        else
+          echo "No changes detected or PR already exists. Deleting branch ${{ env.BRANCH_NAME }}"
+          git checkout main
+          git branch -D ${{ env.BRANCH_NAME }}
+          git push origin --delete ${{ env.BRANCH_NAME }}
         fi
