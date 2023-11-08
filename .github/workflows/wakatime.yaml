@@ -40,14 +40,12 @@ jobs:
         git config --global user.email ${{ env.BOT_ACTION_MAIL }}
         git fetch origin
         EXISTS=$(git ls-remote --heads origin ${{ env.BRANCH_NAME }})
+        git checkout -B ${{ env.BRANCH_NAME }}
         if [ -n "$EXISTS" ]; then
           echo "Branch ${{ env.BRANCH_NAME }} already exists. Resetting to origin/main"
-          git checkout ${{ env.BRANCH_NAME }}
-          git reset --hard origin/main
           git push --force
         else
           echo "Branch ${{ env.BRANCH_NAME }} does not exist. Creating."
-          git checkout -b ${{ env.BRANCH_NAME }}
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
         fi
 
