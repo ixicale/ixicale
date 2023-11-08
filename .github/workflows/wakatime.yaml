@@ -34,26 +34,17 @@ jobs:
       run: |
         gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}" 
 
-    - name: Create or Update Branch
+    - name: Create branch from main
       run: |
         git config --global user.name ${{ env.BOT_ACTION_NAME }}
         git config --global user.email ${{ env.BOT_ACTION_MAIL }}
         git fetch origin
         EXISTS=$(git ls-remote --heads origin ${{ env.BRANCH_NAME }})
         if [ -n "$EXISTS" ]; then
-          echo "Branch ${{ env.BRANCH_NAME }} already exists. Checking for updates."
+          echo "Branch ${{ env.BRANCH_NAME }} already exists. Resetting to origin/main"
           git checkout ${{ env.BRANCH_NAME }}
-          BEHIND=$(git log origin/${{ env.BRANCH_NAME }}..origin/main --oneline)
-          echo "------------- Behind --------------"
-          echo $BEHIND
-          if [ -n "$BEHIND" ]; then
-            echo "Branch ${{ env.BRANCH_NAME }} is behind. Updating to main."
-            git reset --hard origin/main;
-            git push --force;
-            echo "Branch ${{ env.BRANCH_NAME }} updated."
-          else
-            echo "Branch ${{ env.BRANCH_NAME }} is up to date."
-          fi
+          git reset --hard origin/main
+          git push --force
         else
           echo "Branch ${{ env.BRANCH_NAME }} does not exist. Creating."
           git checkout -b ${{ env.BRANCH_NAME }}
