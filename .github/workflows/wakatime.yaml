@@ -82,9 +82,11 @@ jobs:
           gh pr create \
             --base main \
             --head ${{ env.BRANCH_NAME }} \
-            --title "workflow/wakatime_stats, Update WakaTime stats" \
-            --body "README updated from workflow using wakatime. Hurry up @${{ github.repository_owner }}! come and take a look 🚀" \
+            --title "Update WakaTime stats" \
+            --body "README updated from workflow using wakatime.\nHurry up @${{ github.repository_owner }}! come and take a look 🚀" \
             --reviewer ${{ github.repository_owner }}
+            --assignee ${{ github.repository_owner }} \
+            --label workflow
         else
           echo "Pull request already exists."
           exit 0
