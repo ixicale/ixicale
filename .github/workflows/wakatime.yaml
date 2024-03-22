@@ -79,8 +79,9 @@ jobs:
         git pull
         HAS_CHANGES=$(git diff --name-only origin/main --)
         PR_EXISTS=$(gh pr list --base main --head ${{ env.BRANCH_NAME }} --state open | wc -l)
-        echo "Validation if there are changes and PR does not exist"
-        if [ -n "$HAS_CHANGES" && "$PR_EXISTS" -eq "0" ]; then
+        echo "Has changes: $HAS_CHANGES"
+        echo "PR already exists: $PR_EXISTS"
+        if [ -n "$HAS_CHANGES" || "$PR_EXISTS" -eq "0" ]; then
           gh pr create \
             --base main \
             --head ${{ env.BRANCH_NAME }} \
