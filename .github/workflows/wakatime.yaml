@@ -76,6 +76,7 @@ jobs:
     - name: Create Pull Request
       run: |
         git checkout ${{ env.BRANCH_NAME }}
+        git pull
         HAS_CHANGES=$(git diff --name-only origin/main --)
         PR_EXISTS=$(gh pr list --base main --head ${{ env.BRANCH_NAME }} --state open | wc -l)
         echo "Validation if there are changes and PR does not exist"
