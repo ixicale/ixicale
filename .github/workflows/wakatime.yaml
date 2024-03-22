@@ -81,7 +81,7 @@ jobs:
         PR_EXISTS=$(gh pr list --base main --head ${{ env.BRANCH_NAME }} --state open | wc -l)
         echo "Has changes: $HAS_CHANGES"
         echo "PR already exists: $PR_EXISTS"
-        if [ -n "$HAS_CHANGES" || "$PR_EXISTS" -eq "0" ]; then
+        if [ -n "$HAS_CHANGES" ] && [ "$PR_EXISTS" -eq 0 ]; then
           gh pr create \
             --base main \
             --head ${{ env.BRANCH_NAME }} \
