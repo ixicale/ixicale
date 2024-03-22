@@ -87,7 +87,7 @@ jobs:
             --head ${{ env.BRANCH_NAME }} \
             --title "Update WakaTime stats" \
             --body "README updated from workflow using wakatime.\nHurry up @${{ github.repository_owner }}! come and take a look 🚀" \
-            --reviewer ${{ github.repository_owner }}
+            --reviewer ${{ github.repository_owner }} \
             --assignee ${{ github.repository_owner }} \
             --label workflow
         else
