@@ -1,6 +1,4 @@
 <!-- Typing SVG by DenverCoder1 - https://github.com/DenverCoder1/readme-typing-svg -->
-[![WakaTime](https://github.com/ixicale/ixicale/actions/workflows/wakatime.yaml/badge.svg?branch=main)](https://github.com/ixicale/ixicale/actions/workflows/wakatime.yaml)
-
 
 <p align="center">
 <img align="center" src="assets/gif/coding.gif" alt="Coding" height="200px" />
@@ -10,6 +8,7 @@
 </p>
 
 <h2 align="center">Contact Me</h2>
+
 
 <p align="center">
   <a href="mailto:ixicaleescalate@gmail.com?subject=Hello%20Xide,%20from%20github"><img src="https://img.shields.io/badge/ixicaleescalate@gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Contact me!" height="30px" /></a>&#8287;&#8287;
@@ -23,6 +22,7 @@
 <h2 align="center">💻 About me 😁</h2>
 <br>
 
+-   💻 Visit my site [ixicale.io](https://ixicale.github.io) 
 -   🔭 I’m currently Developer at Stori.
 -   🌱 I’m currently learning Vue .
 -   👯 Part of Developer Community.
