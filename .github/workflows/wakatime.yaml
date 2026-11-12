@@ -1,98 +1,65 @@
 name: Scheduled WakaTime Update
 
+# Writes the WakaTime language stats (last 7 days) into the "waka" section of
+# README.md and commits the change directly to main. No bot branch and no PR.
+#
+# Data: a public WakaTime share link in JSON format (Chart Type: Languages,
+# Date Range: Last 7 Days), in the repository variable WAKATIME_SHARE_URL.
+# WakaTime does not accept API keys outside its editor plugins any more.
+#
+# Push: main is protected. WAKA_PUSH_TOKEN is a fine-grained token of the
+# repository owner (this repository only, "Contents: Read and write").
+# The owner can bypass the protection, so the push works.
+
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  # Allow to automate by schedule
+  # Runs once a week, on Sunday at midnight (UTC)
   schedule:
-    - cron: '0 0 * * *'  # Runs every day at midnight
+    - cron: '0 0 * * 0'
+
+# Only one run at a time
+concurrency:
+  group: wakatime
+  cancel-in-progress: false
+
+permissions:
+  contents: read
 
 jobs:
   update-wakatime:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
-    - name: Set up environment variables
-      run: |
-        echo "BRANCH_NAME=workflow/wakatime_stats" >> $GITHUB_ENV
-        echo "BOT_ACTION_NAME='GitHub Actions Bot'" >> $GITHUB_ENV
-        echo "BOT_ACTION_MAIL='actions@github.com'" >> $GITHUB_ENV
-
-    - name: Authenticate the GitHub CLI tool
-      run: |
-        gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}" 
-
-    - name: Checkout code
-      uses: actions/checkout@v2
+    # Always main, also when you start a test run from another branch
+    - name: Check out main
+      uses: actions/checkout@v4
       with:
-        fetch-depth: 0 # Necessary for operations that need full history
-        token: ${{ secrets.GITHUB_TOKEN }}
+        ref: main
+        token: ${{ secrets.WAKA_PUSH_TOKEN }}
 
-    - name: Create branch from origin/main
-      run: |
-        git config --global user.name ${{ env.BOT_ACTION_NAME }}
-        git config --global user.email ${{ env.BOT_ACTION_MAIL }}
-        [ -z "$(git ls-remote --heads origin ${{ env.BRANCH_NAME }})" ] && {
-          echo "Branch ${{ env.BRANCH_NAME }} does not exist. Creating."
-          git checkout -b ${{ env.BRANCH_NAME }} origin/main
-          git push --set-upstream origin ${{ env.BRANCH_NAME }}
-        } || {
-          echo "Branch ${{ env.BRANCH_NAME }} already exists. Resetting to origin/main"
-          git checkout ${{ env.BRANCH_NAME }}
-          git reset --hard origin/main
-          git push --force
-        }
-
-    - name: Update README using WakaTime
-      id: wakatime
-      uses: athul/waka-readme@master
+    # The script comes from the branch of this run
+    - name: Get the script
+      uses: actions/checkout@v4
       with:
-        WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
-        BLOCKS: ⣀⣄⣤⣦⣶⣷⣿
-        AUTHOR_NAME: ${{ env.BOT_ACTION_NAME }}
-        AUTHOR_EMAIL: ${{ env.BOT_ACTION_MAIL }}
-        TARGET_BRANCH: ${{ env.BRANCH_NAME }}
+        path: .waka-script
+        sparse-checkout: .github/scripts
+        persist-credentials: false
 
-    - name: Commit and push if there are changes
+    - name: Write WakaTime stats into README.md
+      env:
+        # A repository variable or a secret: both work
+        WAKATIME_SHARE_URL: ${{ vars.WAKATIME_SHARE_URL || secrets.WAKATIME_SHARE_URL }}
+      run: python3 -I .waka-script/.github/scripts/waka_readme.py "$WAKATIME_SHARE_URL" README.md
+
+    - name: Commit and push to main if README.md changed
       run: |
-        git config --global user.name ${{ env.BOT_ACTION_NAME }}
-        git config --global user.email ${{ env.BOT_ACTION_MAIL }}
-        git fetch origin
-        git add -A
-        CHANGED=$(git diff-index --name-only HEAD --)
-        if [ -n "$CHANGED" ]; then
-          git commit -m "Updated WakaTime stats"
-          git push
-        else
-          echo "No changes detected."
+        if git diff --quiet -- README.md; then
+          echo "No changes in README.md"
           exit 0
         fi
-
-    - name: Create Pull Request
-      run: |
-        git checkout ${{ env.BRANCH_NAME }}
-        git pull
-        HAS_CHANGES=$(git diff --name-only origin/main --)
-        PR_EXISTS=$(gh pr list --base main --head ${{ env.BRANCH_NAME }} --state open | wc -l)
-        echo "Has changes: $HAS_CHANGES"
-        echo "PR already exists: $PR_EXISTS"
-        if [ -n "$HAS_CHANGES" ] && [ "$PR_EXISTS" -eq 0 ]; then
-          gh pr create \
-            --base main \
-            --head ${{ env.BRANCH_NAME }} \
-            --title "Update WakaTime stats" \
-            --body "README updated from workflow using wakatime.\nHurry up @${{ github.repository_owner }}! come and take a look 🚀" \
-            --reviewer ${{ github.repository_owner }} \
-            --assignee ${{ github.repository_owner }} \
-            --label workflow
-        else
-          echo "No changes detected or PR already exists. Deleting branch ${{ env.BRANCH_NAME }}"
-          git checkout main
-          git branch -D ${{ env.BRANCH_NAME }}
-          git push origin --delete ${{ env.BRANCH_NAME }}
-        fi
+        git config user.name "GitHub Actions Bot"
+        git config user.email "actions@github.com"
+        git commit -m "Update WakaTime stats [skip ci]" -- README.md
+        git push origin HEAD:main
