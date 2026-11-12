@@ -49,7 +49,8 @@ jobs:
 
     - name: Write WakaTime stats into README.md
       env:
-        WAKATIME_SHARE_URL: ${{ vars.WAKATIME_SHARE_URL }}
+        # A repository variable or a secret: both work
+        WAKATIME_SHARE_URL: ${{ vars.WAKATIME_SHARE_URL || secrets.WAKATIME_SHARE_URL }}
       run: python3 -I .waka-script/.github/scripts/waka_readme.py "$WAKATIME_SHARE_URL" README.md
 
     - name: Commit and push to main if README.md changed
