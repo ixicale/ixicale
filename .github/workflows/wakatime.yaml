@@ -28,6 +28,34 @@ jobs:
     timeout-minutes: 10
 
     steps:
+    # Shows why a call fails before the main step runs. It prints only the
+    # HTTP status, two headers, and the start of the body. It never prints a key.
+    - name: Check WakaTime and GitHub access
+      env:
+        WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+        WAKA_PUSH_TOKEN: ${{ secrets.WAKA_PUSH_TOKEN }}
+      run: |
+        [ -n "$WAKATIME_API_KEY" ] || { echo "::error::WAKATIME_API_KEY is empty or missing"; exit 1; }
+        [ -n "$WAKA_PUSH_TOKEN" ] || { echo "::error::WAKA_PUSH_TOKEN is empty or missing"; exit 1; }
+        echo "WAKATIME_API_KEY length: ${#WAKATIME_API_KEY} (starts with waka_: $([[ $WAKATIME_API_KEY == waka_* ]] && echo yes || echo no))"
+        [[ "$WAKATIME_API_KEY" =~ [[:space:]] ]] && echo "::warning::WAKATIME_API_KEY has spaces or line breaks"
+
+        echo "--- WakaTime API ---"
+        AUTH=$(printf '%s' "$WAKATIME_API_KEY" | base64 -w0)
+        CODE=$(curl -s -o waka.json -D waka.h -w '%{http_code}' \
+          -H "Authorization: Basic $AUTH" \
+          https://wakatime.com/api/v1/users/current/stats/last_7_days)
+        echo "HTTP $CODE"
+        grep -i -E '^(server|cf-mitigated):' waka.h || true
+        head -c 400 waka.json; echo
+
+        echo "--- GitHub token ---"
+        curl -s -H "Authorization: Bearer $WAKA_PUSH_TOKEN" \
+          https://api.github.com/repos/${{ github.repository }} \
+          | python3 -c 'import json,sys; d=json.load(sys.stdin); print("permissions:", d.get("permissions", d.get("message")))'
+
+        [ "$CODE" = "200" ] || { echo "::error::WakaTime API answered HTTP $CODE"; exit 1; }
+
     - name: Update README using WakaTime
       uses: athul/waka-readme@master
       with:
